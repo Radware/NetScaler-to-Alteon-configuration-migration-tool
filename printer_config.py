@@ -119,9 +119,14 @@ def print_real_server(real_alteon_object):
     comment = real_alteon_object.get_comment()
     ip_version = real_alteon_object.get_ip_version().strip("ip")
     add_ports_lst = real_alteon_object.get_list_add_ports() #addport
-    line = f'/c/slb/real {name}/{state}/ipver {ip_version}/rip {ip_address}/name "{comment}"\n'
-    if len(add_ports_lst) > 0:
+    if not comment:
+        line = f'/c/slb/real {name}/{state}/ipver {ip_version}/rip {ip_address}\n'
+    else:
+        line = f'/c/slb/real {name}/{state}/ipver {ip_version}/rip {ip_address}/name "{comment}"\n'
+    if len(add_ports_lst) > 0 and comment:
         line = f"/c/slb/real {name}/{state}/ipver {ip_version}/rip {ip_address}/name '{comment}'/addport {'addport '.join(add_ports_lst)}\n"
+    if len(add_ports_lst) > 0 and not comment:
+        line = f"/c/slb/real {name}/{state}/ipver {ip_version}/rip {ip_address}/addport {'addport '.join(add_ports_lst)}\n"
     return line
 
 
@@ -493,7 +498,8 @@ def print_virt(virt_alteon_object):
     attributes = {
         "ipver": ip_version,
         "vip": ip_address,
-        "vname": description
+        "vname": description,
+        "rtsrcmac": "ena"
     }
 
     # Iterate through the attributes and append if the value is valid

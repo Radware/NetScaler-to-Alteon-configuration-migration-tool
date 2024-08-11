@@ -85,7 +85,7 @@ def assemble_slb(bind_lb_vserver_lst,
                     if https_virt_name:
                         service_obj = Service(service_id=f"SVC_{virt_dict['virt_name']}",
                                               action='redirect',
-                                              redirect_string= '"https://$host/$path"',
+                                              redirect_string= '"https://$host/$path?$query"',
                                               service_port=virt_dict['service_port'],
                                               application= virt_dict['service_type'],
                                               virt_assoiciate=https_virt_name,
