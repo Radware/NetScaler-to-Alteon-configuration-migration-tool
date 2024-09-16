@@ -1,5 +1,6 @@
 import ipaddress
 import re
+import validators
 
 
 def is_valid_ip(address):
@@ -45,8 +46,8 @@ def is_fqdn(s):
     - Labels may contain letters, digits, and hyphens.
     - The top-level domain (TLD) must be letters.
     """
-    pattern = r'^(?=.{1,253}$)(([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,})$'
-    return re.match(pattern, s) is not None
+
+    return validators.domain(s)
 
 
 def validate_port(input_string):
@@ -180,8 +181,9 @@ def is_add_server(line):
 
 def is_add_server_fqdn(line):
     split_line = line.split(" ")
-    if split_line[0] == "add" and split_line[1] == "server" and is_fqdn(split_line[3]):
-        return True
+    if split_line[0] == "add" and split_line[1] == "server":
+        if is_fqdn(split_line[3].strip()):
+            return True
 
 
 def is_add_responder_policy(line):
@@ -377,6 +379,17 @@ service_mapping_to_ALT = [
     {"service": "QUIC_BRIDGE", "protocol": "TCP", "forceproxy": "True", "Supported": "False"},
     {"service": "HTTP_QUIC", "protocol": "TCP", "forceproxy": "True", "Supported": "True", "Application": "HTTPS"}
 
+]
+
+add_server_flags = [
+    "-domainResolveRetry",
+    "-IPv6Address",  # Values: YES, NO
+    "-queryType",  # Values: A, AAAA, SRV
+    "-translationIp",  # Requires <ip_addr>
+    "-translationMask",  # Requires netmask value
+    "-state",  # Values: ENABLED, DISABLED
+    "-comment",  # Free text
+    "-td",  # Requires a positive integer
 ]
 
 service_group_flags = [
@@ -1190,8 +1203,8 @@ add_lb_vserver_flags = [
     },
     {
         "netscaler_vserver_feature": "cltTimeout",
-        "alteon_support": False,
-        "message": "Supported in tcp optimization profile"
+        "alteon_support": True,
+        "message": "Supported"
 
 
     },

@@ -11,7 +11,7 @@ unhandled_lines_file_path = net_scaler.get_unhandled_lines_file_path()
 unhandled_flags_path = net_scaler.get_unhandled_flags_path()
 handled_lines_file_path = net_scaler.get_handled_lines_file_path()
 
-print("[+]Processing Real Server configuration")
+print("[+]Processing Real Server configuration ")
 if alteon_object.list_all_real_servers():
     for real_server in alteon_object.list_all_real_servers():
         write_to_alteon_config(configuration_file_path,print_real_server(real_server))

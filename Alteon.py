@@ -46,7 +46,10 @@ class Alteon:
         return None
 
     def duplicate_real_server(self, existing_name, new_name, new_addport):
-        original_server = self.get_real_server(existing_name)
+        if self.get_real_server(existing_name):
+            original_server = self.get_real_server(existing_name)
+        else:
+            original_server = self.get_fqdn(existing_name)
         if original_server:
             new_server = original_server.clone(new_name)
             new_server.set_list_add_ports(new_addport)
@@ -97,6 +100,12 @@ class Alteon:
 
     # Service methods
     def add_service(self, service):
+        existing_service = self.get_service(service.service_id)
+        if existing_service:
+            logger.info(f"Service with ID {service.service_id} already exists. Skipping addition.")
+            return
+        # If not, add the new service
+        logger.info(f"Service with ID {service.service_id} added successfully.")
         self.services.append(service)
 
     def remove_service(self, name):
@@ -113,8 +122,13 @@ class Alteon:
 
     # Virtual Server (Virt) methods
     def add_virt(self, virt):
-        self.virts.append(virt)
+        # Check if an object with the same virtual_server_id and ip_address already exists
+        for existing_virt in self.virts:
+            if existing_virt.virtual_server_id == virt.virtual_server_id and existing_virt.ip_address == virt.ip_address:
+                return
 
+        # If no match is found, add the new object
+        self.virts.append(virt)
     def remove_virt(self, name):
         self.virts = [virt for virt in self.virts if virt.name != name]
 
@@ -126,6 +140,9 @@ class Alteon:
 
     def list_all_virts(self):
         return self.virts if self.virts else None
+
+    def get_added_virt_names(self):
+        return [virt.virtual_server_id for virt in self.virts]
 
     # Monitor methods
     def add_monitor(self, monitor):

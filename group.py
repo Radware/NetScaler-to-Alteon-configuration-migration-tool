@@ -47,21 +47,26 @@ class Group:
         self.group_id = value
 
     # You will need to create additional getters and setters for all other attributes
+    def has_real_server(self, real_server_name):
+        # Check if the group already contains a real server with the same service_member name
+        return any(server['service_member'] == real_server_name for server in self.real_servers)
 
     def add_real_server(self, real_server):
-        self.real_servers.append(real_server)
+        # Ensure the real server is not already in the group to avoid duplicates
+        if not self.has_real_server(real_server['service_member']):
+            self.real_servers.append(real_server)
 
     # def remove_real_server(self, server_id):
     #     self.real_servers_ids = real_servers_ids
-
-    def get_real_server(self, server_id):
+    def get_real_server(self, real_server_name):
+        # Retrieve a real server by its service_member name
         for server in self.real_servers:
-            if server == server_id:
+            if server['service_member'] == real_server_name:
                 return server
         return None
 
     def list_all_real_servers(self):
-        return [server for server in self.real_servers]
+        return self.real_servers
 
     # Description
     def get_description(self):

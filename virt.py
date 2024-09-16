@@ -1,6 +1,6 @@
 
 class Virt:
-    def __init__(self, virtual_server_id, description='', ip_version='IPv4', ip_address='0.0.0.0',
+    def __init__(self, virtual_server_id, description='', ip_version='v4', ip_address='0.0.0.0',
                  enabled="ena", services=None, domain_name='', weight=1, priority_for_availability_metric=1,
                  availability_persistence='Disable', nat_address='0.0.0.0', rule_id=None,
                  session_mode='Client IP', invalid_connections='Drop', traffic_contract=1024,

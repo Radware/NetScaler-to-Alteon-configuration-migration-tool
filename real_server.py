@@ -71,12 +71,29 @@ class RealServer:
         return self.nat_mask
 
 class Fqdn:
-    def __init__(self, fqdn_id, fqdn_domain, state='ena', ip_version='v4', ttl=None):
+    def __init__(self, fqdn_id, fqdn_domain="", state='ena', ip_version='v4', ttl=None, fqdn_real_template=None, add_port=None):
         self.fqdn_id = fqdn_id
         self.fqdn_domain = fqdn_domain
         self.state = state
         self.ip_version = ip_version
         self.ttl = ttl
+        self.fqdn_real_template = fqdn_real_template
+        self.add_port = add_port
+
+    def get_add_port(self):
+        return self.add_port
+
+    def set_add_port(self, value):
+        self.add_port = value
+
+    def clone(self, new_name):
+        return Fqdn(new_name)
+
+    def get_fqdn_real_template(self):
+        return self.fqdn_real_template
+
+    def set_fqdn_real_template(self):
+        self.fqdn_real_template = self.fqdn_real_template
 
     def get_fqdn_id(self):
         return self.fqdn_id

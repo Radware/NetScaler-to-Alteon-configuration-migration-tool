@@ -137,9 +137,22 @@ def print_fqdn_server(fqdn_alteon_object):
     state = fqdn_alteon_object.get_state()
     ip_version = fqdn_alteon_object.get_ip_version().strip("ip")
     ttl = fqdn_alteon_object.get_ttl()
-    lines = f"""/c/slb/adv/fqdnreal {fqdn_id}/name {fqdn_domain}/ttl {ttl}/group grp_fqdn_{fqdn_id}/tmpl {fqdn_id}/{state}
-    /c/slb/real {fqdn_id}/dis/ipver {ip_version}/rip 1.1.1.1
-    /c/slb/group grp_fqdn_{fqdn_id}/ipver {ip_version}/add {fqdn_id}\n"""
+    fqdn_real_template = fqdn_alteon_object.get_fqdn_real_template()
+    add_port = fqdn_alteon_object.get_add_port()
+
+    if fqdn_real_template:
+        lines = f"""/c/slb/adv/fqdnreal {fqdn_id}/name {fqdn_domain}/ttl {ttl}/group grp_fqdn_{fqdn_real_template}/tmpl {fqdn_real_template}/{state}
+            /c/slb/real {fqdn_id}/dis/ipver {ip_version}/rip 1.1.1.1 
+            /c/slb/group grp_fqdn_{fqdn_id}/ipver {ip_version}/add {fqdn_id}\n"""
+        if add_port:
+            lines = f"""/c/slb/adv/fqdnreal {fqdn_id}/name {fqdn_domain}/ttl {ttl}/group grp_fqdn_{fqdn_real_template}/tmpl {fqdn_real_template}/{state}
+                        /c/slb/real {fqdn_id}/dis/ipver {ip_version}/rip 1.1.1.1/addport {add_port}
+                        /c/slb/group grp_fqdn_{fqdn_id}/ipver {ip_version}/add {fqdn_id}\n"""
+
+    else:
+        lines = f"""/c/slb/adv/fqdnreal {fqdn_id}/name {fqdn_domain}/ttl {ttl}/group grp_fqdn_{fqdn_id}/tmpl {fqdn_id}/{state}
+        /c/slb/real {fqdn_id}/dis/ipver {ip_version}/rip 1.1.1.1
+        /c/slb/group grp_fqdn_{fqdn_id}/ipver {ip_version}/add {fqdn_id}\n"""
     return lines
 
 
@@ -482,7 +495,7 @@ def print_virt(virt_alteon_object):
     Get Alteon Object and print service Alteon CLI configuration according to the Object recived"""
     virtual_server_id = virt_alteon_object.get_virtual_server_id()
     description = virt_alteon_object.get_description()
-    ip_version = virt_alteon_object.get_ip_version().strip("ip")
+    ip_version = virt_alteon_object.get_ip_version().strip("IP")
     if validate_ipv4(virt_alteon_object.get_ip_address()) or validate_ipv6(virt_alteon_object.get_ip_address()):
         ip_address = virt_alteon_object.get_ip_address()
     enabled = virt_alteon_object.get_enabled()
@@ -517,6 +530,7 @@ def print_virt(virt_alteon_object):
         return ""
 
 
+
 def print_service(service_alteon_object):
     action = service_alteon_object.get_action()
     redirect_str = service_alteon_object.get_redirect_string()
@@ -526,7 +540,12 @@ def print_service(service_alteon_object):
     protocol = service_alteon_object.get_protocol()
     group_id = service_alteon_object.get_group_id()
     real_server_port = service_alteon_object.get_real_server_port()
-    virt_assoiciate = service_alteon_object.get_virt_assoiciate()
+    session_timeout = service_alteon_object.get_session_timeout() ####################################
+    if isinstance(service_alteon_object.get_virt_assoiciate(), str):
+        virt_assoiciate = service_alteon_object.get_virt_assoiciate()
+    else:
+        virt_assoiciate = service_alteon_object.get_virt_assoiciate().get_virtual_server_id()
+
 
     # Basic service configuration
     line = f'/c/slb/virt {virt_assoiciate}/service {service_port} {application.lower()}\n'
@@ -534,6 +553,9 @@ def print_service(service_alteon_object):
 
     if protocol and protocol.lower() != "tcp":
         line += f'\n    protocol {protocol.lower()}\n'
+
+    if session_timeout:
+        line += f'\n    tmout {session_timeout.lower()}\n'
 
     # Handle redirect action
     if action == "redirect":
@@ -543,7 +565,7 @@ def print_service(service_alteon_object):
     # Handle FTP special case
     if application.lower() == 'ftp' and service_port == "21":
         line = f'/c/slb/virt {virt_assoiciate}/service {service_port} {application.lower()}\n'
-        line += f'    protocol {protocol.lower()}\n    group {group_id}\n    rport {real_server_port}\n'
+        line += f'    group {group_id}\n    rport {real_server_port}\n'
         line += f'    ftpp ena\n    dataport 20'
 
         # Add additional service for FTP-Data on port 20
