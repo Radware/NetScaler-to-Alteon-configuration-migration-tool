@@ -79,6 +79,7 @@ class Fqdn:
         self.ttl = ttl
         self.fqdn_real_template = fqdn_real_template
         self.add_port = add_port
+        self.list_add_ports = []
 
     def get_add_port(self):
         return self.add_port
@@ -131,3 +132,9 @@ class Fqdn:
 
     def set_ttl(self, value):
         self.ttl = value
+
+    def get_list_add_ports(self):
+        return self.list_add_ports
+
+    def set_list_add_ports(self, value):
+        self.list_add_ports.append(value)

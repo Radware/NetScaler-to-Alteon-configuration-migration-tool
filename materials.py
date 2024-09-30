@@ -392,6 +392,29 @@ add_server_flags = [
     "-td",  # Requires a positive integer
 ]
 
+responder_policy_flags = [
+    {
+        "netscaler_vserver_feature": "undefAction",
+        "alteon_support": False,
+        "message": "Unsupported for this tool"
+    },
+    {
+        "netscaler_vserver_feature": "comment",
+        "alteon_support": False,
+        "message": "Unsupported for this tool"
+    },
+    {
+        "netscaler_vserver_feature": "logAction",
+        "alteon_support": False,
+        "message": "Unsupported for this tool"
+    },
+    {
+        "netscaler_vserver_feature": "appflowAction",
+        "alteon_support": False,
+        "message": "Unsupported for this tool"
+    }
+]
+
 service_group_flags = [
 
     {

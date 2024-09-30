@@ -301,8 +301,10 @@ class Netscaler:
         for index, item in enumerate(split_line):
             if index > 4 and "-" in item:
                 flag = item.strip("-")
-                flag_value = split_line[index + 1].strip()
-                add_responder_policy_dict[flag] = flag_value
+                for responder_policy_flag in responder_policy_flags:
+                    if responder_policy_flag['netscaler_vserver_feature'] == flag:
+                        flag_value = split_line[index + 1].strip()
+                        add_responder_policy_dict[flag] = flag_value
         self.add_responder_policy_list.append(add_responder_policy_dict)
         return add_responder_policy_dict
 

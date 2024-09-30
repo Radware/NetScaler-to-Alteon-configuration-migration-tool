@@ -329,27 +329,41 @@ def associate_service_with_virt_group(service_obj, virt_obj, service_dict, group
 
 def handle_service_group_ports(service_obj, group_obj, service_dict, bind_service_group_no_mon, alt_objc):
     service_ports_lst = []
+    real_servers = {}
 
-    # Process the services bound to the group or VIRT
+    # Collect all ports and real servers
     for service_grp in bind_service_group_no_mon:
         if service_dict['service_name'] == service_grp['service_name']:
-            service_ports_lst.append(service_grp['port'])
+            if 'port' in service_grp and service_grp['port']:
+                service_ports_lst.append(service_grp['port'])
+            if 'service_member' in service_grp:
+                if service_grp['service_member'] not in real_servers:
+                    real_servers[service_grp['service_member']] = set()
+                if 'port' in service_grp:
+                    real_servers[service_grp['service_member']].add(service_grp['port'])
 
-            # Handle multiple unique service ports
-            if len(set(service_ports_lst)) > 1:
-                for port in get_unique_values(service_ports_lst):
-                    alt_objc.duplicate_real_server(service_grp['service_member'],
-                                                   f"{service_grp['service_member']}_{port}", port)
-                    group_obj.add_real_server(
-                        {'service_member': f"{service_grp['service_member']}_{port}", 'port': service_grp['port']})
-                service_obj.set_real_server_port("0")
+    unique_ports = set(service_ports_lst)
 
-            # Handle a single service port
-            elif len(set(service_ports_lst)) == 1:
-                group_obj.add_real_server({'service_member': service_grp['service_member'], 'port': ''})
-                service_obj.set_real_server_port(service_grp['port'])
+    if len(unique_ports) == 1:
+        # Single port scenario
+        port = next(iter(unique_ports))
+        service_obj.set_real_server_port(port)
+        for server, ports in real_servers.items():
+            group_obj.add_real_server({'service_member': server, 'port': ''})
+    elif len(unique_ports) > 1:
+        # Multiple ports scenario
+        service_obj.set_real_server_port("0")
+        for server, ports in real_servers.items():
+            for port in ports:
+                new_server_name = f"{server}_{port}"
+                alt_objc.duplicate_real_server(server, new_server_name, port)
+                group_obj.add_real_server({'service_member': new_server_name, 'port': port})
+    else:
+        # No ports specified
+        for server in real_servers:
+            group_obj.add_real_server({'service_member': server, 'port': ''})
 
-    # Add the VIRT and Group to alt_objc to ensure they are correctly associated
+    # Add the Group to alt_objc
     alt_objc.add_group(group_obj)
     alt_objc.add_virt(service_obj.get_virt_assoiciate())
 
