@@ -1,0 +1,13 @@
+# NetScaler to Alteon Configuration Migration Tool
+# Required Python packages
+
+# Domain/URL validation for FQDN detection
+validators>=0.20.0
+
+# Note: The following packages are part of Python standard library and don't need installation:
+# - logging (built-in)
+# - ipaddress (built-in)
+# - re (built-in) 
+# - tempfile (built-in)
+# - os (built-in)
+# - pdb (built-in)

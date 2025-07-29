@@ -1,0 +1,210 @@
+# NetScaler to Alteon Configuration Migration Tool - .gitignore
+
+# =============================================================================
+# LOG FILES
+# =============================================================================
+*.log
+alteon.log
+netscaler.log
+*.log.*
+
+# =============================================================================
+# CONFIGURATION AND OUTPUT FILES
+# =============================================================================
+# Configuration text files (input/output)
+*.txt
+!requirements.txt
+*.conf
+*.config
+
+# Generated output directories and files
+output/
+results/
+converted/
+*_output/
+*_results/
+
+# =============================================================================
+# TEST AND PRACTICE FILES
+# =============================================================================
+# Test files
+test_*.py
+*_test.py
+tests/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Practice and example files
+*_practice.py
+*_example.py
+practice_*.py
+example_*.py
+alteon_class_practice.py
+health_check_sainity_checks.py
+
+# Experimental and version files
+converter_v*.py
+*_v*.py
+experimental/
+temp_*.py
+draft_*.py
+
+# =============================================================================
+# DOCUMENTATION DRAFTS AND REPORTS
+# =============================================================================
+# Report files (empty or draft reports)
+*_REPORT.md
+*_FIXES_REPORT.md
+CRITICAL_FIXES_REPORT.md
+GROUP_MEMBER_FIX_REPORT.md
+ISSUE_RESOLUTION_REPORT.md
+CONFIGURATION_FORMAT_IMPROVEMENTS.md
+
+# Draft documentation
+draft_*.md
+temp_*.md
+notes_*.md
+
+# =============================================================================
+# DEVELOPMENT AND IDE FILES
+# =============================================================================
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter notebooks (if any)
+*.ipynb
+.ipynb_checkpoints/
+
+# =============================================================================
+# BACKUP AND TEMPORARY FILES
+# =============================================================================
+# Backup files
+*.bak
+*.backup
+*.old
+*_backup.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# =============================================================================
+# NETSCALER SPECIFIC FILES
+# =============================================================================
+# NetScaler configuration inputs (customer data)
+ns_config_*.txt
+netscaler_config_*.txt
+customer_*.txt
+prod_*.txt
+*_config.txt
+
+# IP address logs or specific customer files
+*.[0-9]*.[0-9]*.[0-9]*.[0-9]*.log
+*.*.*.*.log
+
+# =============================================================================
+# ALTEON SPECIFIC FILES
+# =============================================================================
+# Generated Alteon configurations
+alteon_config*.txt
+*_alteon.txt
+alteon_output*.txt
+
+# =============================================================================
+# PYTHON SPECIFIC
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# =============================================================================
+# PROJECT SPECIFIC EXCLUDES
+# =============================================================================
+# Exclude any files with IP addresses in names
+*.[0-9][0-9][0-9].*
+*-[0-9][0-9][0-9].*
+
+# Exclude working directories
+work/
+working/
+scratch/
+
+# Exclude any customer or environment specific files
+customer*/
+prod*/
+dev*/
+staging*/
+uat*/
+
+# =============================================================================
+# CERTIFICATE AND KEY FILES (SECURITY)
+# =============================================================================
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+*.jks
+
+# =============================================================================
+# LOCAL DEPLOYMENT TOOLS (NEVER UPLOAD - Contains credentials)
+# =============================================================================
+deploy_to_alteon.py
+alteon_deployment_tool.py
+*_deploy*.py
+test_deploy*.py
+deploy_requirements.txt
+DEPLOYMENT_TOOL_USAGE.md
+test_deployment_setup.py
